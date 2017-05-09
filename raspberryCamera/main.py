@@ -31,7 +31,7 @@ config = {
 DB = Database.Database(config)
 store = Storage.Storage(config)
 
-device = Device.Device(database=DB, storage=store, "3", "rpi-camera", True)
+device = Device.Device(database=DB, storage=store, id="3", type="rpi-camera", enabled=True)
 
 # Listen for incoming connections
 try:
