@@ -15,14 +15,18 @@ class Broker:
         5: "Connection refused - not authorised",
     }
 
-    def __init__(self, topic="topic/channel", logs = True, logName='Broker'):
+    def __init__(self, topic="topic/channel", logs = True, logName='Broker', host='protorpi201.local', port=1883, connectFunction = None, willTopic="", willPayload=""):
         self.mqttc = mqtt.Client()
         self.console = Logger.Logger(logName="Broker("+logName+")", enabled=logs, printConsole=True)
         self.console.log("Initialization...")
         self.callback = None
         self.rc = None
+        self.connectFunction = connectFunction
         self.topic = topic
+        self.host = host
+        self.port = port
         self.qos = 1
+        self.mqttc.will_set(willTopic, willPayload, qos=0, retain=True)
         self.mqttc = mqtt.Client()
         self.mqttc.on_connect = self._on_connect()
         self.mqttc.on_disconnect = self._on_disconnect
@@ -31,8 +35,9 @@ class Broker:
         self.mqttc.on_unsubscribe = self._on_unsubscribe
         self.mqttc.on_publish = self._on_publish
         self.mqttc.on_log = self._on_log
-        self.mqttc.connect(host='protorpi201.local', port=1883)
         self.callbackFunctions = {}
+        self.mqttc.connect(self.host, self.port)
+
 
     def _on_log(self, client, userdata, level, buf):
         #self.console.log("Log:  %s" , buf )
@@ -42,7 +47,9 @@ class Broker:
         def onConnect(anymqttc, userdata, rc):
             self.rc = rc
             self.console.log("Connecting... %s" , str(self.rc_code[self.rc]) )
-            #self.mqttc.subscribe(topic=self.topic, qos=self.qos)
+            if(self.connectFunction):
+                self.connectFunction()
+
         return onConnect
 
     def _on_disconnect(self,mqttc, userdata, rc):
@@ -66,7 +73,6 @@ class Broker:
     def _on_publish(self, mqttc, userdata, mid):
         self.console.log("Message Published")
         #self.mqttc.disconnect()
-
 
     def setCallback( self, callback):
         self.callback = callback
