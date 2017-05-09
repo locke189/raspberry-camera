@@ -94,7 +94,7 @@ class Camera:
         self.broker.publishMessage( self.regTopic, self.getDeviceData() )
 
     def getDeviceData(self):
-        data = "{'id': '" + (self.id) +"', 'type': '" + self.type + + "', 'data': '" + self.data + "'}"
+        data = "{'id': '" + (self.id) +"', 'type': '" + self.type + "', 'data': '" + self.data + "'}"
         return data
 
     def capture(self):
