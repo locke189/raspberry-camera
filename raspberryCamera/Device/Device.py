@@ -20,7 +20,7 @@ class Device:
 
     def __init__(self, database, storage, id, type, enabled, basePath="", regTopic="regDevice",logs=True, logName="Device", pingTimer = 600, pingPath='ping'):
         self.sensors = []
-        self.actuator = []
+        self.actuators = []
 
         #Initializing loger
         self.console = Logger.Logger(logName=logName, enabled=logs, printConsole=True)
