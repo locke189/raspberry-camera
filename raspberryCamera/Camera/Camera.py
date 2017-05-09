@@ -31,7 +31,7 @@ class Camera:
         self.type = "CAM"
         self.enabled = enabled
         self.data = ""
-        self.regTopic=regTopic
+        self.regTopic=devicePath+regTopic
 
         self.devicePath = devicePath
         self.path = self.devicePath + "/actuators/" + str(self.id)
