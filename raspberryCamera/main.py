@@ -7,6 +7,7 @@ import datetime
 
 from Database import Database, Storage
 from Shared import Logger
+from Device import Device
 import time
 
 # Waits for services to be ready in RPi
@@ -30,8 +31,7 @@ config = {
 DB = Database.Database(config)
 store = Storage.Storage(config)
 
-
-
+device = Device.Device(database=DB, storage=store, "3", "rpi-camera", True)
 
 # Listen for incoming connections
 try:
