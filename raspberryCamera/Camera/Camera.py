@@ -24,7 +24,7 @@ class Camera:
                 "START":    4,
                 "STOP":     5 }
 
-    def __init__(self, storage,broker, id, enabled, devicePath="", regTopic="/regSensor", logs=True):
+    def __init__(self, storage,broker, id, enabled, devicePath="", regTopic="/regActuator", logs=True):
 
         self.storage = storage
         self.id = id
@@ -34,7 +34,7 @@ class Camera:
         self.regTopic=regTopic
 
         self.devicePath = devicePath
-        self.path = self.devicePath + "/sensors/" + str(self.id)
+        self.path = self.devicePath + "/actuators/" + str(self.id)
 
         self.console = Logger.Logger(logName="Camera("+self.path+")", enabled=logs, printConsole=True)
         self.console.log("Initialization...")
