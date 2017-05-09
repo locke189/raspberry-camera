@@ -42,9 +42,11 @@ class Device:
         self.broker.subscribeTopicWithCallback("ping", self.registration )
 
         #adding camera
-        self.sensors.append(Camera.Camera(storage=self.storage, broker=self.broker, id=0, enabled=True))
+        self.sensors.append(Camera.Camera(storage=self.storage, broker=self.broker, id=0, enabled=True, devicePath=self.path))
 
-    def registration(self):
+        self.registration()
+
+    def registration(self,topic="", payload="" ):
         self.console.log("Sending registration...")
         self.broker.publishMessage( self.regTopic, self.getDeviceData() )
 
