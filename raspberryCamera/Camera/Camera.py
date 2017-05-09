@@ -87,14 +87,14 @@ class Camera:
             if self.periodicUpdates:
                 self.stopPeriodicCaptures()
             self.broker.publishMessage( self.path + '/data', "STOP" )
-            
+
 
     def registration(self):
         self.console.log("Sending registration...")
         self.broker.publishMessage( self.regTopic, self.getDeviceData() )
 
     def getDeviceData(self):
-        data = "{'id': '" + self.id +"', 'type': '" + self.type + + "', 'data': '" + self.data + "'}"
+        data = "{'id': '" + str(self.id) +"', 'type': '" + self.type + + "', 'data': '" + self.data + "'}"
         return data
 
     def capture(self):
