@@ -34,7 +34,7 @@ class Device:
         self.regTopic = regTopic
 
         #Initializing broker
-        self.broker = Broker.Broker(topic=topic, logs = True, logName=logName, connectFunction=self.connectFunction, willTopic=self.path, willPayload="disconnected")
+        self.broker = Broker.Broker(topic="camera", logs = True, logName=logName, connectFunction=self.connectFunction, willTopic=self.path, willPayload="disconnected")
         self.broker.setCallbacks()
         self.broker.start()
 
