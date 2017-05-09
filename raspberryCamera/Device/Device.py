@@ -60,7 +60,7 @@ class Device:
 
 
     def getDeviceData(self):
-        data = "{'id': '" + self.id +"', 'type': '" + self.type "'}"
+        data = "{'id': '" + self.id +"', 'type': '" + self.type + "'}"
         return data
 
 
