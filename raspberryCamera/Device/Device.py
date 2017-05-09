@@ -30,7 +30,7 @@ class Device:
         self.id = id
         self.type = type
         self.enabled = enabled
-        self.devicePath = basePath + "/devices/" + str(self.id)
+        self.path = basePath + "/devices/" + str(self.id)
         self.regTopic = regTopic
 
         #Initializing broker
