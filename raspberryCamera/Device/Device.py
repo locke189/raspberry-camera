@@ -10,6 +10,7 @@ import sys
 import datetime
 import os.path
 import json
+import time
 from Shared import Logger
 from Broker import Broker
 from Camera import Camera
@@ -49,6 +50,8 @@ class Device:
     def registration(self,topic="", payload="" ):
         self.console.log("Sending registration...")
         self.broker.publishMessage( self.regTopic, self.getDeviceData() )
+
+        time.sleep(5)
 
         for sensor in self.sensors:
             sensor.registration()

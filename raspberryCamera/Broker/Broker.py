@@ -102,12 +102,33 @@ class Broker:
         self.console.log("Broker callback")
         self.console.log("Topic: %s", topic)
 
-        self.callbackFunctions[topic](topic, payload)
+        key = topic
+
+        while(key != ""):
+            self.console.log("Calling key %s", key)
+            if(key in self.callbackFunctions.keys()):
+                self.callbackFunctions[key](topic, payload)
+                break
+            else:
+                if key == "/#":
+                    break
+                else:
+                    separated = key.split("/")
+                    element = separated.pop()
+                    if element == "#":
+                        separated.pop()
+                    separated.append("#")
+                    key = "/".join(map(str,separated))
+
+
 
     def subscribeTopicWithCallback(self,topic,callback):
         self.console.log("Subscribing topic: %s", topic)
         self.subscribe(topic)
         self.callbackFunctions[topic] = callback
+
+
+
 
     def setCallbacks(self):
         self.setCallback(self._brokerCallback)
