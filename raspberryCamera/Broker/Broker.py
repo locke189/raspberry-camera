@@ -26,8 +26,8 @@ class Broker:
         self.host = host
         self.port = port
         self.qos = 1
-        self.mqttc.will_set(willTopic, willPayload, qos=0, retain=True)
         self.mqttc = mqtt.Client()
+        self.mqttc.will_set(willTopic, willPayload, qos=0, retain=True)
         self.mqttc.on_connect = self._on_connect()
         self.mqttc.on_disconnect = self._on_disconnect
         self.mqttc.on_message = self._on_message

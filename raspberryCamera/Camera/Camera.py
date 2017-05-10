@@ -65,14 +65,13 @@ class Camera:
 
         self.filename = self.path.replace("/","") + ".jpg"
 
-        self.periodicUpdates = False
-
         # Scheduler
         self.jobId = self.path.replace("/","")
         self.scheduler = BackgroundScheduler()
         self.scheduler.start()
         self.job = self.scheduler.add_job(self.capture, 'interval', minutes=self.timerInterval, id=self.jobId, replace_existing=True)
-        self.job.pause()
+        if not self.settings["periodicUpdates"]:
+            self.job.pause()
         self.jobIdPing = self.path.replace("/","") + "ping"
         self.jobPing = self.scheduler.add_job(self.registration, 'interval', minutes=2, id=self.jobIdPing, replace_existing=True)
 
@@ -92,6 +91,13 @@ class Camera:
 
             self.settings[key] = self.valueCheck(self.settings[key], payload)
             self.loadSettingsToCamera()
+
+            if key == "periodicUpdates":
+                if self.settings["periodicUpdates"]:
+                    self.setPeriodicCaptures()
+                else:
+                    self.stopPeriodicCaptures()
+
             self.saveFile(self.settings)
             self.broker.publishMessage( self.path + "/ack", self.settings[key])
         else:
@@ -105,8 +111,9 @@ class Camera:
                           "contrast": 0,
                           "brightness": 80,
                           "saturation": 0,
-                          "ISO": 0,
-                          "timer": 60
+                          "iso": 0,
+                          "timer": 60,
+                          "periodicUpdates": False
                 }
 
     def loadSettingsToCamera(self):
@@ -117,7 +124,7 @@ class Camera:
             self.camera.contrast = self.settings["contrast"]
             self.camera.brightness = self.settings["brightness"]
             self.camera.saturation = self.settings["saturation"]
-            self.camera.ISO = self.settings["ISO"]
+            self.camera.iso = self.settings["iso"]
         self.timerInterval = self.settings["timer"]
 
     def saveFile(self, data):
@@ -137,17 +144,6 @@ class Camera:
 
         if payload == str(self.actions["CAPTURE"]):
             self.capture()
-            self.broker.publishMessage( self.path + '/data', self.data )
-
-        elif payload == str(self.actions["START"]):
-            if not self.periodicUpdates:
-                self.setPeriodicCaptures()
-            self.broker.publishMessage( self.path + '/data', "START" )
-
-        elif payload == str(self.actions["STOP"]):
-            if self.periodicUpdates:
-                self.stopPeriodicCaptures()
-            self.broker.publishMessage( self.path + '/data', "STOP" )
 
 
     def registration(self):
@@ -173,6 +169,7 @@ class Camera:
         self.console.log("Filepath = %s", self.filename)
         self.console.log("Uploading file...")
         self.data = self.storage.saveFile(path,self.filename)
+        self.broker.publishMessage( self.path + '/data', self.data )
 
 
     def setUptateTime(self, seconds):
@@ -183,10 +180,12 @@ class Camera:
 
     def setPeriodicCaptures(self):
         self.console.log("Starting periodic captures")
+        self.settings["periodicUpdates"] = True
         self.job.resume()
 
     def stopPeriodicCaptures(self):
         self.console.log("Stopping periodic captures")
+        self.settings["periodicUpdates"] = False
         self.job.pause()
 
     def valueCheck(self, object, value):
