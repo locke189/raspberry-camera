@@ -74,16 +74,16 @@ class Camera:
 
     def actionsCallback(self, topic, payload):
 
-        if payload == self.actions["CAPTURE"]:
+        if payload == str(self.actions["CAPTURE"]):
             self.capture()
             self.broker.publishMessage( self.path + '/data', self.data )
 
-        elif payload == self.actions["START"]:
+        elif payload == str(self.actions["START"]):
             if not self.periodicUpdates:
                 self.setPeriodicCaptures()
             self.broker.publishMessage( self.path + '/data', "START" )
 
-        elif payload == self.actions["STOP"]:
+        elif payload == str(self.actions["STOP"]):
             if self.periodicUpdates:
                 self.stopPeriodicCaptures()
             self.broker.publishMessage( self.path + '/data', "STOP" )
@@ -98,11 +98,13 @@ class Camera:
         return data
 
     def capture(self):
+        self.console.log("Say Cheese!!!")
         self.camera.capture(self.filename)
         self.console.log("Uploading image file to storage.")
 
         path = self.path + '/' + self.filename
         self.console.log("Filepath = %s", self.filename)
+        self.console.log("Uploading file...")
         self.data = self.storage.saveFile(path,self.filename)
 
         if self.periodicUpdates:
