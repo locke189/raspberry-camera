@@ -44,6 +44,10 @@ class Camera:
         self.console = Logger.Logger(logName="Camera("+self.path+")", enabled=logs, printConsole=True)
         self.console.log("Initialization...")
 
+        #camera settings
+        if sys.platform != "darwin":
+            self.camera = picamera.PiCamera()
+
         #Settings
         self.settingsFilename = self.path.replace("/","") + ".conf"
 
@@ -57,9 +61,7 @@ class Camera:
             self.settings = self.loadFile(self.settingsFilename)
             self.loadSettingsToCamera()
 
-        #camera settings
-        if sys.platform != "darwin":
-            self.camera = picamera.PiCamera()
+
 
         self.filename = self.path.replace("/","") + ".jpg"
 
